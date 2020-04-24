@@ -33,25 +33,36 @@ def get_tweet_sentiment(tweet):
 
 # 1. Take in user, return most positive tweet(s)
 def getTweet(username):
-    user = api.get_user(screen_name=username)
+    try:
+        user = api.get_user(screen_name=username)
+    except:
+        print("Error: \"" + username + "\" is not a valid twitter username")
+        return -1
+
     userTweets = {} #Tweet dictionary for user, key = tweetId; value[0] = tweetText' value[1] = sentiment
 
     max = -1
     maxTweet = ''
+    count = 0 # only look at past 50 tweets
+
+    print("\nAnalyzing " + username + "'s tweets...'")
 
     for status in Cursor(api.user_timeline, id=user.id).items():
+        count = count + 1
+        if count == 50:
+            break
+
         sentiment = get_tweet_sentiment(status.text)
         userTweets[status.id] = [status.text, sentiment]
+
         if sentiment > max:
             max = sentiment
             maxTweet = status.text
 
-    # for i in userTweets:
-    #     print(i, userTweets[i])
-        print("Tweet: " + maxTweet )
-        print("Sentiment: " + str(sentiment))
+    print("\nTweet: " + maxTweet )
+    print("Sentiment: " + str(max))
 
-        return maxTweet
+    return maxTweet
 
 # 2. Take in a tweet, return the most important words
 def getWords(tweet):
@@ -92,6 +103,7 @@ myStreamListener = StreamListener()
 myStream = tweepy.Stream(auth = api.auth, listener=myStreamListener)
 
 username = raw_input("Enter a Twitter username (eg: @johnsmith): ")
-print("USERNAME: " + username)
+print("\nUsername: " + username)
 positiveTweet = getTweet(username)
+
 # test screen name = 'AbbyLan78016969'
