@@ -228,7 +228,8 @@ genreDict = {
     'utopia',
     'utopian',
     'universe',
-    'geek'
+    'geek',
+    'computer'
   ],
   'thriller': [
     'thriller',
@@ -275,7 +276,6 @@ genreDict = {
     'weapon',
     'violent',
     'civil',
-    'computer',
     'WWI',
     'WWII',
     'coldwar',
