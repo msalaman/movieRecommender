@@ -12,6 +12,27 @@ import tweepy, json
 import sys, os, re
 from textblob import TextBlob
 from tweepy import Cursor, OAuthHandler, Stream, StreamListener
+from six.moves import input as raw_input
+import nltk
+nltk.download('gutenberg')
+from nltk.stem.porter import PorterStemmer
+from nltk.corpus import gutenberg
+import math
+import ast
+from genreKeywords import genreDict
+
+#TF-IDF functions from https://stevenloria.com/tf-idf/
+def tf(word, blob):
+    return blob.words.count(word) / len(blob.words)
+
+def n_containing(word, bloblist):
+    return sum(1 for blob in bloblist if word in blob.words)
+
+def idf(word, bloblist):
+    return math.log(len(bloblist) / (1 + n_containing(word, bloblist)))
+
+def tfidf(word, blob, bloblist):
+    return tf(word, blob) * idf(word, bloblist)
 
 #Source for sentiment analysis https://www.geeksforgeeks.org/twitter-sentiment-analysis-using-python/
 def clean_tweet(tweet):
@@ -66,15 +87,35 @@ def getTweet(username):
 
 # 2. Take in a tweet, return the most important words
 def getWords(tweet):
+    #words = positiveTweet.split()
+    blob = TextBlob(tweet)
+    bloblist = []
+    #using corpus text to compare our tweet to common English in order to calculate significane of words
+    #Source: https://www.nltk.org/book/ch02.html
+    for fileid in gutenberg.fileids()[:5]:
+        bloblist.append(TextBlob(gutenberg.raw(fileid)))
+    scores = {word: tfidf(word, blob, bloblist) for word in blob.words}
+    sorted_words = sorted(scores.items(), key=lambda x: x[1], reverse=True)
     words = []
+    for word, score in sorted_words:
+        words.append(word)
+        print("\tWord: {}, TF-IDF: {}".format(word, round(score, 5)))
+    print(words)
+    #get only stems of words
+    porter = PorterStemmer()
+    words = [porter.stem(word) for word in words]
     return words
 
-# 3. Take in words[], return corresponding genre
+# 3. Take in words[], return corresponding genre, if no genre found then it returns empty string
 def getGenre(words):
     # open genreKeywords.txt
-    # open tags.txt
-    genre = ''
-    return genre
+    for word in words: #goes through list of words that have already been ordered by importance
+        for genre, kws in genreDict.items(): #check word matches to any genre keyword
+            for kw in kws:
+                if word in kw: #word could be stem of keyword
+                    print('word:' + word + ' --> keyword:' + kw + ' --> genre:' + genre)
+                    return genre
+    return ''
 
 # 4. Take in genre, return movieID(s)
 def getMovieID(genre):
@@ -105,5 +146,7 @@ myStream = tweepy.Stream(auth = api.auth, listener=myStreamListener)
 username = raw_input("Enter a Twitter username (eg: @johnsmith): ")
 print("\nUsername: " + username)
 positiveTweet = getTweet(username)
+words = getWords(positiveTweet)
+getGenre(words)
 
 # test screen name = 'AbbyLan78016969'
