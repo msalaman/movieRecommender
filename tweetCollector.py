@@ -8,27 +8,27 @@ from textblob import TextBlob
 from tweepy import Cursor, OAuthHandler, Stream, StreamListener
 
 #Source for sentiment analysis https://www.geeksforgeeks.org/twitter-sentiment-analysis-using-python/
-def clean_tweet(tweet): 
-    ''' 
-    Utility function to clean tweet text by removing links, special characters 
-    using simple regex statements. 
+def clean_tweet(tweet):
     '''
-    return ' '.join(re.sub("(@[A-Za-z0-9]+)|([^0-9A-Za-z \t])|(\w+:\/\/\S+)", " ", tweet).split()) 
+    Utility function to clean tweet text by removing links, special characters
+    using simple regex statements.
+    '''
+    return ' '.join(re.sub("(@[A-Za-z0-9]+)|([^0-9A-Za-z \t])|(\w+:\/\/\S+)", " ", tweet).split())
 
-def get_tweet_sentiment(tweet): 
-    ''' 
-    Utility function to classify sentiment of passed tweet 
-    using textblob's sentiment method 
+def get_tweet_sentiment(tweet):
     '''
-    # create TextBlob object of passed tweet text 
-    analysis = TextBlob(clean_tweet(tweet)) 
+    Utility function to classify sentiment of passed tweet
+    using textblob's sentiment method
+    '''
+    # create TextBlob object of passed tweet text
+    analysis = TextBlob(clean_tweet(tweet))
     # return sentiment score
     return analysis.sentiment.polarity
 
-ACCESS_TOKEN = "273162409-xV3a7cpTrY1t9hPV9ezQwKUDLLr5EceZnoekCtJD"
-ACCESS_TOKEN_SECRET = "wEjcpSCeWKsWArOInus2GPImi7a7IsSlsZi4luKVfeMPe"
-CONSUMER_KEY = "VZ0Ja4ITAt217GxgiBqct1ly5"
-CONSUMER_SECRET = "OViM1vaFLR0n9qYZXGaaNlnhsC9KDmeIYuJRB4IV2bMX6xFTBm"
+ACCESS_TOKEN = "1221578987870326785-oxOKp2lkUcFTidYhDfwdsjwbOOcDF0"
+ACCESS_TOKEN_SECRET = "6e9lRkqxlMuotKcohvvB7s4oEpo5gBkIAKMkQqzKZnrsc"
+CONSUMER_KEY = "OsHAeLLTINOFA9uhor0KLnGeh"
+CONSUMER_SECRET = "0mr25tTCYPlSxKufS6qqgQprHviKxeKhgPfTLrSgsHfAdOh6BK"
 
 auth = tweepy.OAuthHandler(CONSUMER_KEY, CONSUMER_SECRET)
 auth.set_access_token(ACCESS_TOKEN, ACCESS_TOKEN_SECRET)
@@ -44,4 +44,3 @@ for status in Cursor(api.user_timeline, id=user.id).items():
     userTweets[status.id] = [status.text, get_tweet_sentiment(status.text)]
 
 print(userTweets)
-
