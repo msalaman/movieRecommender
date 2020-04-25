@@ -1,5 +1,5 @@
 genreDict = {
-  'action': [
+  'Action': [
     'action',
     'fight',
     'explosion',
@@ -16,7 +16,7 @@ genreDict = {
     'villain',
     'weapon'
   ],
-  'adventure': [
+  'Adventure': [
     'adventure',
     'journey',
     'explore',
@@ -26,7 +26,7 @@ genreDict = {
     'exciting',
     'quest'
   ],
-  'animation': [
+  'Animation': [
     'animation',
     'vfx',
     'effects',
@@ -40,7 +40,7 @@ genreDict = {
     'liveaction',
     'draw'
   ],
-  "children's": [
+  "Children's": [
     'family',
     'Disney',
     'Pixar',
@@ -65,7 +65,7 @@ genreDict = {
     'daughter',
     'parent'
   ],
-  'comedy': [
+  'Comedy': [
     'comedy',
     'hilarious',
     'laugh',
@@ -80,7 +80,7 @@ genreDict = {
     'sitcom',
     'prank'
   ],
-  'crime': [
+  'Crime': [
     'crime',
     'criminal',
     'killer',
@@ -103,7 +103,7 @@ genreDict = {
     'mafia',
     'hitman'
   ],
-  'documentary': [
+  'Documentary': [
     'documentary',
     'learn',
     'inform',
@@ -113,7 +113,7 @@ genreDict = {
     'real-life',
     'biography'
   ],
-  'drama': [
+  'Drama': [
     'intense',
     'dramatic',
     'drama',
@@ -122,7 +122,7 @@ genreDict = {
     'twist',
     'crazy'
   ],
-  'fantasy': [
+  'Fantasy': [
     'goblin',
     'wizard',
     'magic',
@@ -138,7 +138,7 @@ genreDict = {
     'creature',
     'supernatural'
   ],
-  'film-noir': [
+  'Film-noir': [
     'film-noir',
     'detective',
     'crime',
@@ -149,7 +149,7 @@ genreDict = {
     'depressing',
     'gloom'
   ],
-  'horror': [
+  'Horror': [
     'horror',
     'scary',
     'scare',
@@ -169,7 +169,7 @@ genreDict = {
     'jump',
 
   ],
-  'musical': [
+  'Musical': [
     'musical',
     'soundtrack',
     'singing',
@@ -179,7 +179,7 @@ genreDict = {
     'song',
     'dance'
   ],
-  'mystery': [
+  'Mystery': [
     'mystery',
     'reveal',
     'suspense',
@@ -187,7 +187,7 @@ genreDict = {
     'crime',
     'clue'
   ],
-  'romance': [
+  'Romance': [
     'romance',
     'love',
     'marriage',
@@ -206,7 +206,7 @@ genreDict = {
     'relationship',
     'shakespeare'
   ],
-  'sci-fi': [
+  'Sci-Fi': [
     'sci-fi',
     'space',
     'spaceship',
@@ -231,7 +231,7 @@ genreDict = {
     'geek',
     'computer'
   ],
-  'thriller': [
+  'Thriller': [
     'thriller',
     'surprise',
     'edgy',
@@ -243,7 +243,7 @@ genreDict = {
     'paranoia',
     'anxiety'
   ],
-  'war': [
+  'War': [
     'battle',
     'soldiers',
     'world',
@@ -282,7 +282,7 @@ genreDict = {
     'holocaust',
     'nazi'
   ],
-  'western': [
+  'Western': [
     'western',
     'west',
     'cowboy',

@@ -8,6 +8,7 @@
 
     Give movie rec(s) based on user's recent tweets
 '''
+from __future__ import division, unicode_literals
 import tweepy, json
 import sys, os, re
 from textblob import TextBlob
@@ -20,6 +21,13 @@ from nltk.corpus import gutenberg
 import math
 import ast
 from genreKeywords import genreDict
+import random
+
+reload(sys)
+sys.setdefaultencoding('utf-8')
+
+# -*- coding: utf-8 -*-
+
 
 #TF-IDF functions from https://stevenloria.com/tf-idf/
 def tf(word, blob):
@@ -66,7 +74,7 @@ def getTweet(username):
     maxTweet = ''
     count = 0 # only look at past 50 tweets
 
-    print("\nAnalyzing " + username + "'s tweets...'")
+    print("\nAnalyzing " + username + "'s tweets...")
 
     for status in Cursor(api.user_timeline, id=user.id).items():
         count = count + 1
@@ -76,12 +84,15 @@ def getTweet(username):
         sentiment = get_tweet_sentiment(status.text)
         userTweets[status.id] = [status.text, sentiment]
 
+        # print(count, sentiment, status.text)
+
         if sentiment > max:
             max = sentiment
             maxTweet = status.text
 
-    print("\nTweet: " + maxTweet )
-    print("Sentiment: " + str(max))
+    print("\nTweet with highest sentiment: ")
+    print(" - Tweet: " + maxTweet )
+    print(" - Sentiment: " + str(max))
 
     return maxTweet
 
@@ -99,8 +110,8 @@ def getWords(tweet):
     words = []
     for word, score in sorted_words:
         words.append(word)
-        print("\tWord: {}, TF-IDF: {}".format(word, round(score, 5)))
-    print(words)
+        # print("\tWord: {}, TF-IDF: {}".format(word, round(score, 5)))
+    #print(words)
     #get only stems of words
     porter = PorterStemmer()
     words = [porter.stem(word) for word in words]
@@ -108,25 +119,38 @@ def getWords(tweet):
 
 # 3. Take in words[], return corresponding genre, if no genre found then it returns empty string
 def getGenre(words):
+    print("\nAssigning genre from Tweet content...\n")
     # open genreKeywords.txt
     for word in words: #goes through list of words that have already been ordered by importance
         for genre, kws in genreDict.items(): #check word matches to any genre keyword
             for kw in kws:
                 if word in kw: #word could be stem of keyword
-                    print('word:' + word + ' --> keyword:' + kw + ' --> genre:' + genre)
+                    # print('word:' + word + ' --> keyword:' + kw + ' --> genre:' + genre)
                     return genre
     return ''
 
-# 4. Take in genre, return movieID(s)
-def getMovieID(genre):
-    movie = ''
-    return movie
+# 4. Take in genre, return movie(s)
+def getMovie(genre):
+    moviesTxt = open("ml-latest-small/movies.csv", "r").read().splitlines()
 
-# 5. Take in movieID, return movie title
-def getMovie(ID):
-    movie = ''
-    # open 'ml-latest-small/movies.csv'
-    return movie
+    while True:
+        # from movies.csv, select a random listing
+        # if the genres match, return movie title
+        # else continue until one is found
+        movie = random.choice(moviesTxt)
+        movieTitle = movie.split(",")[1]
+        genres = (movie.split(","))[2]
+        try:
+            genreList = genres.split("|")
+        except:
+            genreList = genres
+
+        if genre in genreList:
+            return movieTitle
+        else:
+            continue
+
+    return ''
 
 
 ''' Twitter token info '''
@@ -143,10 +167,16 @@ api = tweepy.API(auth)
 myStreamListener = StreamListener()
 myStream = tweepy.Stream(auth = api.auth, listener=myStreamListener)
 
-username = raw_input("Enter a Twitter username (eg: @johnsmith): ")
-print("\nUsername: " + username)
+print("\n-----------------------")
+username = raw_input("Enter a Twitter username (eg: @johnsmith): \n-> ")
+
 positiveTweet = getTweet(username)
 words = getWords(positiveTweet)
-getGenre(words)
+genre = getGenre(words)
+movie = getMovie(genre)
+
+print("-----------------------")
+print("****** Recommended genre: " + genre + " ******")
+print("****** Movie: " + movie + " ******\n")
 
 # test screen name = 'AbbyLan78016969'
