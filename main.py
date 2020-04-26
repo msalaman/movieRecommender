@@ -22,9 +22,12 @@ import math
 import ast
 from genreKeywords import genreDict
 import random
+import imp
+import numpy
 
-reload(sys)
-sys.setdefaultencoding('utf-8')
+
+imp.reload(sys)
+#sys.setdefaultencoding('utf-8')
 
 # -*- coding: utf-8 -*-
 
@@ -91,10 +94,10 @@ def getTweet(username):
             maxTweet = status.text
 
     print("\nTweet with highest sentiment: ")
-    print(" - Tweet: " + maxTweet )
+    print(" - Tweet: " + clean_tweet(maxTweet) )
     print(" - Sentiment: " + str(max))
 
-    return maxTweet
+    return maxTweet, max
 
 # 2. Take in a tweet, return the most important words
 def getWords(tweet):
@@ -108,30 +111,34 @@ def getWords(tweet):
     scores = {word: tfidf(word, blob, bloblist) for word in blob.words}
     sorted_words = sorted(scores.items(), key=lambda x: x[1], reverse=True)
     words = []
+    scores = []
     for word, score in sorted_words:
         words.append(word)
+        scores.append(score)
         # print("\tWord: {}, TF-IDF: {}".format(word, round(score, 5)))
     #print(words)
     #get only stems of words
     porter = PorterStemmer()
     words = [porter.stem(word) for word in words]
-    return words
+    return words, scores
 
 # 3. Take in words[], return corresponding genre, if no genre found then it returns empty string
 def getGenre(words):
     print("\nAssigning genre from Tweet content...\n")
     # open genreKeywords.txt
+    index = 0
     for word in words: #goes through list of words that have already been ordered by importance
         for genre, kws in genreDict.items(): #check word matches to any genre keyword
             for kw in kws:
                 if word in kw: #word could be stem of keyword
                     # print('word:' + word + ' --> keyword:' + kw + ' --> genre:' + genre)
-                    return genre
-    return ''
+                    return genre, index
+        index += 1
+    return '', 0
 
 # 4. Take in genre, return movie(s)
 def getMovie(genre):
-    moviesTxt = open("ml-latest-small/movies.csv", "r").read().splitlines()
+    moviesTxt = open("ml-latest-small/movies.csv", "r", encoding="utf8").read().splitlines()
 
     while True:
         # from movies.csv, select a random listing
@@ -166,17 +173,18 @@ auth.set_access_token(ACCESS_TOKEN, ACCESS_TOKEN_SECRET)
 api = tweepy.API(auth)
 myStreamListener = StreamListener()
 myStream = tweepy.Stream(auth = api.auth, listener=myStreamListener)
-
 print("\n-----------------------")
 username = raw_input("Enter a Twitter username (eg: @johnsmith): \n-> ")
 
-positiveTweet = getTweet(username)
-words = getWords(positiveTweet)
-genre = getGenre(words)
+positiveTweet, maxSentiment = getTweet(username)
+words, scores = getWords(positiveTweet)
+genre, index = getGenre(words)
 movie = getMovie(genre)
 
 print("-----------------------")
 print("****** Recommended genre: " + genre + " ******")
 print("****** Movie: " + movie + " ******\n")
+#We validate the accuracy by taking the TD-IDF score of the word used divided by the max TD-IDF score found in the tweet and adding it to the sentiment score of the tweet. We then divide the sum by 2 to get a decimal score out of 1. 1 is most confident, 0 is most likely inaccurate.
+print("****** Accuracy: " + str((scores[index]/(numpy.max(scores)) + maxSentiment)/2) + "******\n")
 
 # test screen name = 'AbbyLan78016969'
