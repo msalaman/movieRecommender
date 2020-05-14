@@ -3,3 +3,5 @@ title.basics.tsv.gz
 
 MovieTweetings/
 MovieTweetings.zip
+
+__pycache__
