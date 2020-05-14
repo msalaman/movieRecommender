@@ -25,10 +25,12 @@ def get_tweet_sentiment(tweet):
     # return sentiment score
     return analysis.sentiment.polarity
 
-ACCESS_TOKEN = "1221578987870326785-oxOKp2lkUcFTidYhDfwdsjwbOOcDF0"
-ACCESS_TOKEN_SECRET = "6e9lRkqxlMuotKcohvvB7s4oEpo5gBkIAKMkQqzKZnrsc"
-CONSUMER_KEY = "OsHAeLLTINOFA9uhor0KLnGeh"
-CONSUMER_SECRET = "0mr25tTCYPlSxKufS6qqgQprHviKxeKhgPfTLrSgsHfAdOh6BK"
+'''For this program to work, you must insert your own twitter api credentials in your own local repository (Do not push your credentials to this public repository'''
+ACCESS_TOKEN = '''Your Access Token'''
+ACCESS_TOKEN_SECRET = '''Your Access Token Secret'''
+CONSUMER_KEY = '''Your Consumer Key'''
+CONSUMER_SECRET = '''Your Consumer Secret'''
+
 
 auth = tweepy.OAuthHandler(CONSUMER_KEY, CONSUMER_SECRET)
 auth.set_access_token(ACCESS_TOKEN, ACCESS_TOKEN_SECRET)
