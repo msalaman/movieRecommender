@@ -1,4 +1,8 @@
+<<<<<<< HEAD
 #!/usr/bin/env python
+=======
+#!/usr/bin/env python3
+>>>>>>> 07fbd39eb1119e797d3228102bc2590d98d6b48f
 
 '''
     main.py
@@ -138,13 +142,13 @@ def getGenre(words):
 
 # 4. Take in genre, return movie(s)
 def getMovie(genre):
-    moviesTxt = open("ml-latest-small/movies.csv", "r", encoding="utf8").read().splitlines()
+    movies = open("ml-latest-small/movies.csv", "r", encoding="utf8").read().splitlines()
 
     while True:
         # from movies.csv, select a random listing
         # if the genres match, return movie title
         # else continue until one is found
-        movie = random.choice(moviesTxt)
+        movie = random.choice(movies)
         movieTitle = movie.split(",")[1]
         genres = (movie.split(","))[2]
         try:
@@ -174,17 +178,21 @@ api = tweepy.API(auth)
 myStreamListener = StreamListener()
 myStream = tweepy.Stream(auth = api.auth, listener=myStreamListener)
 print("\n-----------------------")
-username = raw_input("Enter a Twitter username (eg: @johnsmith): \n-> ")
+username = sys.argv[1] if len(sys.argv) > 1 else raw_input("Enter a Twitter username (eg: @johnsmith): \n-> ")
 
+print("-----------------------")
 positiveTweet, maxSentiment = getTweet(username)
 words, scores = getWords(positiveTweet)
 genre, index = getGenre(words)
-movie = getMovie(genre)
+if genre:
+    print("****** Recommended genre: " + genre + " ******")
 
-print("-----------------------")
-print("****** Recommended genre: " + genre + " ******")
-print("****** Movie: " + movie + " ******\n")
-#We validate the accuracy by taking the TD-IDF score of the word used divided by the max TD-IDF score found in the tweet and adding it to the sentiment score of the tweet. We then divide the sum by 2 to get a decimal score out of 1. 1 is most confident, 0 is most likely inaccurate.
-print("****** Accuracy: " + str((scores[index]/(numpy.max(scores)) + maxSentiment)/2) + "******\n")
+    movie = getMovie(genre)
 
-# test screen name = 'AbbyLan78016969'
+    print("****** Movie: " + movie + " ******\n")
+    #We validate the accuracy by taking the TD-IDF score of the word used divided by the max TD-IDF score found in the tweet and adding it to the sentiment score of the tweet. We then divide the sum by 2 to get a decimal score out of 1. 1 is most confident, 0 is most likely inaccurate.
+    print("****** Accuracy: " + str((scores[index]/(numpy.max(scores)) + maxSentiment)/2) + "******\n")
+
+    # test screen name = 'AbbyLan78016969'
+else:
+    print('Could not find genre')

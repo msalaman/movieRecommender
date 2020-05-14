@@ -66,6 +66,7 @@ genreDict = {
     'parent'
   ],
   'Comedy': [
+    'lol',
     'comedy',
     'hilarious',
     'laugh',
